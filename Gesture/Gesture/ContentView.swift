@@ -7,7 +7,9 @@
 
 import SwiftUI
 import CoreMotion
+import CoreML
 import WatchConnectivity
+import AVFoundation
 
 import Foundation
 import ClientRuntime
@@ -108,18 +110,17 @@ class WatchSessionDelegate: NSObject, WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        print("Recieved message")
-        print(message)
-        if let data = message["motionData"] as? String {
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: Notification.Name("MotionDataReceived"), object: data)
-            }
+//        print("Recieved message")
+//        print(message)
+//        if let data = message["motionDataRow"] as? String {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name("MotionDataReceived"), object: message)
         }
     }
 }
 
 struct ContentView: View {
-    @State private var motionData: String = "No data received yet"
+    @State private var motionDataText: String = "No data received yet"
     let watchSessionDelegate = WatchSessionDelegate()
     
     // Setup AWS S3 manager
@@ -130,9 +131,31 @@ struct ContentView: View {
     private let csvHeader = "timestamp,xAccel,yAccel,zAccel,xRot,yRot,zRot,gesture\n"
     @State var csvText = "timestamp,xAccel,yAccel,zAccel,xRot,yRot,zRot,gesture\n"
     
-    @State private var selectedOption = "clench"
+    @State private var selectedOption = "Clench"
     let options = ["Clench", "Double Clench", "Pinch", "Double Pinch"]
+    
+    // Model setup
+    let model: SVM = {
+        do {
+            let config = MLModelConfiguration()
+            return try SVM(configuration: config)
+        } catch {
+            print(error)
+            fatalError("Couldn't create SVM model.")
+        }
+    }()
+    @State var motionDataBuffer: [[Double]] = []
+    @State private var classificationText: String = "No classification yet"
+    @State private var classificationProb: Double = 0.0
+    
+    let synth = AVSpeechSynthesizer()
+        
+    private func readOut(text: String) {
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
 
+        synth.speak(utterance)
+    }
     
     var body: some View {
         VStack {
@@ -146,9 +169,9 @@ struct ContentView: View {
                 csvText = csvHeader
             }) {
                 Text("Save to S3")
+                    .padding()
             }
             VStack {
-                Text("Selected Gesture: \(selectedOption)")
                 Menu {
                     ForEach(options, id: \.self) { option in
                         Button(action: {
@@ -161,10 +184,20 @@ struct ContentView: View {
                     Label("Select Gesture", systemImage: "chevron.down.circle")
                         .font(.headline)
                 }
+                Text("Selected Gesture: \(selectedOption)")
             }
-            Text(motionData)
+            Text(classificationText + ": " + String(classificationProb))
+                .padding()
+            Text(motionDataText)
                 .padding()
                 .onAppear {
+                    do{
+                        try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+                        try AVAudioSession.sharedInstance().setActive(true)
+                     }
+                    catch
+                    { print("Fail to enable session") }
+                    
                     if WCSession.isSupported() {
                         let session = WCSession.default
                         session.delegate = watchSessionDelegate
@@ -172,10 +205,53 @@ struct ContentView: View {
                     }
                     
                     NotificationCenter.default.addObserver(forName: Notification.Name("MotionDataReceived"), object: nil, queue: nil) { notification in
-                        if let data = notification.object as? String {
-                            motionData = data + "," + selectedOption + "\n"
-                            self.csvText.append(motionData)
-                            print(motionData)
+                        if let data = notification.object as? Dictionary<String, Any> {
+                            let motionDataTxt = data["motionDataRow"] as! String + "," + selectedOption + "\n"
+                            self.csvText.append(motionDataTxt)
+                            
+                            if motionDataBuffer.count < 10 {
+                                motionDataBuffer.append(data["motionData"] as! [Double])
+                            } else {
+                                // Predict on rolling average of the last data 10 points
+                                motionDataBuffer.removeFirst()
+                                motionDataBuffer.append(data["motionData"] as! [Double])
+                                
+                                // Take the average of motionDataBuffer columnwise.
+                                var columnAverages: [Double] = Array(repeating: 0.0, count: 6)
+                                for row in motionDataBuffer {
+                                    for (index, value) in row.enumerated() {
+                                        columnAverages[index] += value
+                                    }
+                                }
+                                columnAverages = columnAverages.map { $0 / Double(motionDataBuffer.count) }
+
+                                
+                                guard let mlMultiArray = try? MLMultiArray(shape:[6], dataType:MLMultiArrayDataType.double) else {
+                                    fatalError("Unexpected runtime error. MLMultiArray")
+                                }
+                                for (index, element) in columnAverages.enumerated() {
+                                    mlMultiArray[index] = NSNumber(floatLiteral: element)
+                                }
+                                
+                                let modelInput = SVMInput(input: mlMultiArray)
+                                guard let pred = try? model.prediction(input: modelInput) else {
+                                    fatalError("Unexpected runtime error.")
+                                }
+                                
+                                var prevClassText = classificationText
+                                
+                                if pred.classProbability[0]! > pred.classProbability[1]! {
+                                    classificationText = "Clench"
+                                    classificationProb = pred.classProbability[0]!
+                                } else {
+                                    classificationText = "Pinch"
+                                    classificationProb = pred.classProbability[1]!
+                                }
+                                
+                                if prevClassText != classificationText {
+                                    readOut(text: classificationText)
+                                }
+                            }
                         }
                     }
                 }

@@ -102,7 +102,7 @@ struct ContentView: View {
 
     func startRecording() {
         // Update interval for recording motion data
-        let updateInterval = 1.0 / 60.0 // 60 Hz
+        let updateInterval = 1.0 / 15.0 // 60 Hz
         
         motion.deviceMotionUpdateInterval = updateInterval
         motion.startDeviceMotionUpdates()
@@ -129,17 +129,24 @@ struct ContentView: View {
                 yRot = rotationRate.y
                 zRot = rotationRate.z
             }
+            
+            let motionData = [xAccel, yAccel, zAccel, xRot, yRot, zRot]
 
             let timestamp = String(Date().timeIntervalSince1970)
-            let motionData = "\(timestamp),\(xAccel),\(yAccel),\(zAccel),\(xRot),\(yRot),\(zRot)"
+            let motionDataRow = "\(timestamp),\(xAccel),\(yAccel),\(zAccel),\(xRot),\(yRot),\(zRot)"
 
             if let session = session, session.isReachable {
-                let message = ["motionData": motionData]
+                let message = ["motionData": motionData, "motionDataRow": motionDataRow]
                 session.sendMessage(message, replyHandler: nil, errorHandler: { error in
                     print("Error sending motion data: \(error.localizedDescription)")
                 })
             } else {
                 print("Session not reachable")
+                if WCSession.isSupported() {
+                    session = WCSession.default
+                    session?.delegate = sessionDelegate
+                    session?.activate()
+                }
             }
         }
     }

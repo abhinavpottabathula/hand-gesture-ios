@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0715C9D72A1446E900A9BEB1 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0715C9D62A1446E900A9BEB1 /* SVM.mlmodel */; };
 		07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE029E1C5EE00BC0063 /* GestureApp.swift */; };
 		07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE229E1C5EE00BC0063 /* ContentView.swift */; };
 		07D03CE529E1C5EF00BC0063 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07D03CE429E1C5EF00BC0063 /* Assets.xcassets */; };
@@ -80,6 +81,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0715C9D62A1446E900A9BEB1 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
 		07D03CDD29E1C5EE00BC0063 /* Gesture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gesture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D03CE029E1C5EE00BC0063 /* GestureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureApp.swift; sourceTree = "<group>"; };
 		07D03CE229E1C5EE00BC0063 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				07D03CE029E1C5EE00BC0063 /* GestureApp.swift */,
+				0715C9D62A1446E900A9BEB1 /* SVM.mlmodel */,
 				07D03CE229E1C5EE00BC0063 /* ContentView.swift */,
 				07D03CE429E1C5EF00BC0063 /* Assets.xcassets */,
 				07D03CE629E1C5EF00BC0063 /* Preview Content */,
@@ -489,6 +492,7 @@
 			files = (
 				07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */,
 				07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */,
+				0715C9D72A1446E900A9BEB1 /* SVM.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -812,7 +816,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PHH5U7676Y;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.GestureTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -833,7 +837,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PHH5U7676Y;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.GestureTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -854,7 +858,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PHH5U7676Y;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.GestureUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -874,7 +878,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PHH5U7676Y;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.GestureUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
