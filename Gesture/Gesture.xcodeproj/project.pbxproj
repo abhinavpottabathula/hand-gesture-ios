@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0715C9D72A1446E900A9BEB1 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0715C9D62A1446E900A9BEB1 /* SVM.mlmodel */; };
+		073989D22A1592DB00B252F6 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 073989D12A1592DB00B252F6 /* OpenAI */; };
+		073989D42A15ACA000B252F6 /* S3Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073989D32A15ACA000B252F6 /* S3Manager.swift */; };
+		073989D62A15B07E00B252F6 /* OpenAIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073989D52A15B07E00B252F6 /* OpenAIManager.swift */; };
+		073989DA2A15B24C00B252F6 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 073989D92A15B24C00B252F6 /* SVM.mlmodel */; };
 		07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE029E1C5EE00BC0063 /* GestureApp.swift */; };
 		07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE229E1C5EE00BC0063 /* ContentView.swift */; };
 		07D03CE529E1C5EF00BC0063 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07D03CE429E1C5EF00BC0063 /* Assets.xcassets */; };
@@ -81,7 +84,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0715C9D62A1446E900A9BEB1 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
+		073989D32A15ACA000B252F6 /* S3Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Manager.swift; sourceTree = "<group>"; };
+		073989D52A15B07E00B252F6 /* OpenAIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIManager.swift; sourceTree = "<group>"; };
+		073989D92A15B24C00B252F6 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
 		07D03CDD29E1C5EE00BC0063 /* Gesture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gesture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D03CE029E1C5EE00BC0063 /* GestureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureApp.swift; sourceTree = "<group>"; };
 		07D03CE229E1C5EE00BC0063 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -111,6 +116,7 @@
 			files = (
 				07D03D4129E1D83400BC0063 /* AWSMobile in Frameworks */,
 				07D03D3E29E1D3A000BC0063 /* AWSS3 in Frameworks */,
+				073989D22A1592DB00B252F6 /* OpenAI in Frameworks */,
 				07D03D4329E1D84500BC0063 /* AWSCognitoIdentityProvider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -184,10 +190,12 @@
 			isa = PBXGroup;
 			children = (
 				07D03CE029E1C5EE00BC0063 /* GestureApp.swift */,
-				0715C9D62A1446E900A9BEB1 /* SVM.mlmodel */,
 				07D03CE229E1C5EE00BC0063 /* ContentView.swift */,
+				073989D32A15ACA000B252F6 /* S3Manager.swift */,
+				073989D92A15B24C00B252F6 /* SVM.mlmodel */,
 				07D03CE429E1C5EF00BC0063 /* Assets.xcassets */,
 				07D03CE629E1C5EF00BC0063 /* Preview Content */,
+				073989D52A15B07E00B252F6 /* OpenAIManager.swift */,
 			);
 			path = Gesture;
 			sourceTree = "<group>";
@@ -282,6 +290,7 @@
 				07D03D3D29E1D3A000BC0063 /* AWSS3 */,
 				07D03D4029E1D83400BC0063 /* AWSMobile */,
 				07D03D4229E1D84500BC0063 /* AWSCognitoIdentityProvider */,
+				073989D12A1592DB00B252F6 /* OpenAI */,
 			);
 			productName = Gesture;
 			productReference = 07D03CDD29E1C5EE00BC0063 /* Gesture.app */;
@@ -421,6 +430,7 @@
 			mainGroup = 07D03CD429E1C5EE00BC0063;
 			packageReferences = (
 				07D03D3C29E1D3A000BC0063 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+				073989D02A1592DB00B252F6 /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			productRefGroup = 07D03CDE29E1C5EE00BC0063 /* Products */;
 			projectDirPath = "";
@@ -491,8 +501,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */,
+				073989D62A15B07E00B252F6 /* OpenAIManager.swift in Sources */,
+				073989DA2A15B24C00B252F6 /* SVM.mlmodel in Sources */,
 				07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */,
-				0715C9D72A1446E900A9BEB1 /* SVM.mlmodel in Sources */,
+				073989D42A15ACA000B252F6 /* S3Manager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1044,6 +1056,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		073989D02A1592DB00B252F6 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.1;
+			};
+		};
 		07D03D3C29E1D3A000BC0063 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/awslabs/aws-sdk-swift.git";
@@ -1055,6 +1075,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		073989D12A1592DB00B252F6 /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 073989D02A1592DB00B252F6 /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
+		};
 		07D03D3D29E1D3A000BC0063 /* AWSS3 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 07D03D3C29E1D3A000BC0063 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;

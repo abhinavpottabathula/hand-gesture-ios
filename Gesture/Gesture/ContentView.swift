@@ -12,87 +12,16 @@ import WatchConnectivity
 import AVFoundation
 
 import Foundation
-import ClientRuntime
-import AWSClientRuntime
-import AWSS3
-
-
-public class S3manager : ObservableObject {
-    private var client: S3Client?
-    public var files: [String]?
-    private let s3BucketName = "gesture-recordings"
-    private let s3ObjectKey = "sensor_data"
-
-    
-    init() {
-        Task(priority: .high) {
-            do {
-                setenv("AWS_ACCESS_KEY_ID", "", 1)
-                setenv("AWS_SECRET_ACCESS_KEY", "", 1)
-                
-                client = try S3Client(region: "us-west-1")
-                files = try await listBucketFiles(bucket: "bucket_name")
-            } catch {
-                print("hit init error")
-                print(error)
-            }
-        }
-    }
-    
-    public func createFile(withData data: String) {
-        Task(priority: .high) {
-            do {
-                let dataStream = ByteStream.from(stringValue: data)
-
-                let input = PutObjectInput(
-                    body: dataStream,
-                    bucket: self.s3BucketName,
-                    key: String(Date().timeIntervalSince1970) + "_" + self.s3ObjectKey + ".csv"
-                )
-                _ = try await client?.putObject(input: input)
-
-            } catch {
-                print("Failed to upload s3 file: \(error)")
-            }
-        }
-    }
-    
-    // from https://docs.aws.amazon.com/sdk-for-swift/latest/developer-guide/examples-s3-objects.html
-    public func listBucketFiles(bucket: String) async throws -> [String] {
-        
-        if let clientInstance = client {
-            let input = ListObjectsV2Input(
-                bucket: bucket
-            )
-            let output = try await clientInstance.listObjectsV2(input: input)
-            var names: [String] = []
-            
-            guard let objList = output.contents else {
-                return []
-            }
-            
-            for obj in objList {
-                if let objName = obj.key {
-                    names.append(objName)
-                }
-            }
-            
-            return names
-            
-        } else {
-            print("Client has not been initialized!")
-            return [String]()
-        }
-    }
-}
 
 
 class WatchSessionDelegate: NSObject, WCSessionDelegate {
     func sessionDidBecomeInactive(_ session: WCSession) {
+        session.activate()
         print("sessionDidBecomeInactive")
     }
     
     func sessionDidDeactivate(_ session: WCSession) {
+        session.activate()
         print("sessionDidDeactivate")
     }
     
@@ -110,8 +39,6 @@ class WatchSessionDelegate: NSObject, WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-//        print("Recieved message")
-//        print(message)
 //        if let data = message["motionDataRow"] as? String {
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: Notification.Name("MotionDataReceived"), object: message)
@@ -120,7 +47,7 @@ class WatchSessionDelegate: NSObject, WCSessionDelegate {
 }
 
 struct ContentView: View {
-    @State private var motionDataText: String = "No data received yet"
+    @State private var motionDataText: String = ""
     let watchSessionDelegate = WatchSessionDelegate()
     
     // Setup AWS S3 manager
@@ -148,8 +75,9 @@ struct ContentView: View {
     @State private var classificationText: String = "No classification yet"
     @State private var classificationProb: Double = 0.0
     
+    
+    // Text to Speech Synthesizer
     let synth = AVSpeechSynthesizer()
-        
     private func readOut(text: String) {
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
@@ -157,20 +85,59 @@ struct ContentView: View {
         synth.speak(utterance)
     }
     
+    // OpenAI LLM
+    @StateObject private var openAIClient = OpenAIManager()
+    @State var sentence = "OpenAI response..."
+    
+    private func classifyData(data: Dictionary<String, Any>) {
+        if motionDataBuffer.count < 10 {
+            motionDataBuffer.append(data["motionData"] as! [Double])
+        } else {
+            // Predict on rolling average of the last data 10 points
+            motionDataBuffer.removeFirst()
+            motionDataBuffer.append(data["motionData"] as! [Double])
+
+            // Take the average of motionDataBuffer columnwise.
+            var columnAverages: [Double] = Array(repeating: 0.0, count: 6)
+            for row in motionDataBuffer {
+                for (index, value) in row.enumerated() {
+                    columnAverages[index] += value
+                }
+            }
+            columnAverages = columnAverages.map { $0 / Double(motionDataBuffer.count) }
+
+
+            guard let mlMultiArray = try? MLMultiArray(shape:[6], dataType:MLMultiArrayDataType.double) else {
+                fatalError("Unexpected runtime error. MLMultiArray")
+            }
+            for (index, element) in columnAverages.enumerated() {
+                mlMultiArray[index] = NSNumber(floatLiteral: element)
+            }
+
+            let modelInput = SVMInput(input: mlMultiArray)
+            guard let pred = try? model.prediction(input: modelInput) else {
+                fatalError("Unexpected runtime error.")
+            }
+
+            let prevClassText = classificationText
+
+            if pred.classProbability[1]! > pred.classProbability[2]! {
+                classificationText = "clench"
+                classificationProb = pred.classProbability[1]!
+            } else {
+                classificationText = "pinch"
+                classificationProb = pred.classProbability[2]!
+            }
+
+            if prevClassText != classificationText {
+                readOut(text: classificationText)
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
-            Button(action: {
-                csvText = csvHeader
-            }) {
-                Text("Clear Data")
-            }
-            Button(action: {
-                s3Client.createFile(withData: csvText)
-                csvText = csvHeader
-            }) {
-                Text("Save to S3")
-                    .padding()
-            }
+            
             VStack {
                 Menu {
                     ForEach(options, id: \.self) { option in
@@ -184,19 +151,23 @@ struct ContentView: View {
                     Label("Select Gesture", systemImage: "chevron.down.circle")
                         .font(.headline)
                 }
-                Text("Selected Gesture: \(selectedOption)")
+                Text(selectedOption)
             }
             Text(classificationText + ": " + String(classificationProb))
                 .padding()
+            Image(classificationText)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200) // Adjust the size according to your needs
             Text(motionDataText)
                 .padding()
                 .onAppear {
-                    do{
+                    do {
                         try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
                         try AVAudioSession.sharedInstance().setActive(true)
+                     } catch {
+                         print("Fail to enable session")
                      }
-                    catch
-                    { print("Fail to enable session") }
                     
                     if WCSession.isSupported() {
                         let session = WCSession.default
@@ -206,55 +177,40 @@ struct ContentView: View {
                     
                     NotificationCenter.default.addObserver(forName: Notification.Name("MotionDataReceived"), object: nil, queue: nil) { notification in
                         if let data = notification.object as? Dictionary<String, Any> {
+                            // Write data to text string for S3 upload
                             let motionDataTxt = data["motionDataRow"] as! String + "," + selectedOption + "\n"
-                            self.csvText.append(motionDataTxt)
+                            csvText.append(motionDataTxt)
                             
-                            if motionDataBuffer.count < 10 {
-                                motionDataBuffer.append(data["motionData"] as! [Double])
-                            } else {
-                                // Predict on rolling average of the last data 10 points
-                                motionDataBuffer.removeFirst()
-                                motionDataBuffer.append(data["motionData"] as! [Double])
-                                
-                                // Take the average of motionDataBuffer columnwise.
-                                var columnAverages: [Double] = Array(repeating: 0.0, count: 6)
-                                for row in motionDataBuffer {
-                                    for (index, value) in row.enumerated() {
-                                        columnAverages[index] += value
-                                    }
-                                }
-                                columnAverages = columnAverages.map { $0 / Double(motionDataBuffer.count) }
-
-                                
-                                guard let mlMultiArray = try? MLMultiArray(shape:[6], dataType:MLMultiArrayDataType.double) else {
-                                    fatalError("Unexpected runtime error. MLMultiArray")
-                                }
-                                for (index, element) in columnAverages.enumerated() {
-                                    mlMultiArray[index] = NSNumber(floatLiteral: element)
-                                }
-                                
-                                let modelInput = SVMInput(input: mlMultiArray)
-                                guard let pred = try? model.prediction(input: modelInput) else {
-                                    fatalError("Unexpected runtime error.")
-                                }
-                                
-                                var prevClassText = classificationText
-                                
-                                if pred.classProbability[0]! > pred.classProbability[1]! {
-                                    classificationText = "Clench"
-                                    classificationProb = pred.classProbability[0]!
-                                } else {
-                                    classificationText = "Pinch"
-                                    classificationProb = pred.classProbability[1]!
-                                }
-                                
-                                if prevClassText != classificationText {
-                                    readOut(text: classificationText)
-                                }
-                            }
+                            classifyData(data: data)
                         }
                     }
                 }
+            
+            Button(action: {
+                openAIClient.getSentence()
+                sentence = openAIClient.sentenceResponse
+            }) {
+                Text(sentence)
+                    .padding()
+            }
+            
+            HStack {
+                Button(action: {
+                    csvText = csvHeader
+                }) {
+                    Image(systemName: "trash")
+                        .font(Font.system(size: 30))
+                        .padding()
+                }
+                Button(action: {
+                    s3Client.createFile(withData: csvText)
+                    csvText = csvHeader
+                }) {
+                    Image(systemName: "square.and.arrow.down")
+                        .font(Font.system(size: 30))
+                        .padding()
+                }
+            }
         }
         
     }

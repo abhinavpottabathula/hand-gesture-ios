@@ -135,19 +135,43 @@ struct ContentView: View {
             let timestamp = String(Date().timeIntervalSince1970)
             let motionDataRow = "\(timestamp),\(xAccel),\(yAccel),\(zAccel),\(xRot),\(yRot),\(zRot)"
 
+            let message = ["motionData": motionData, "motionDataRow": motionDataRow]
             if let session = session, session.isReachable {
-                let message = ["motionData": motionData, "motionDataRow": motionDataRow]
                 session.sendMessage(message, replyHandler: nil, errorHandler: { error in
                     print("Error sending motion data: \(error.localizedDescription)")
                 })
             } else {
                 print("Session not reachable")
-                if WCSession.isSupported() {
-                    session = WCSession.default
-                    session?.delegate = sessionDelegate
-                    session?.activate()
-                }
             }
+
+//            if let session = session, session.isReachable {
+//                session.sendMessage(message, replyHandler: nil, errorHandler: { error in
+//                    print("Error sending motion data: \(error.localizedDescription)")
+//                })
+//            } else {
+//                print("Session not reachable")
+//            }
+            
+//            if WCSession.defaultSession().reachable == true {
+////                let requestValues = ["Send" : "From iWatch to iPhone"]
+//                let session = WCSession.defaultSession()
+//
+////                session.sendMessage(message, replyHandler: nil, errorHandler: { (error: NSError) -> Void in
+////                    print("Error sending motion data: \(error.description)"))
+////                })
+//
+//                session.sendMessage(message,
+//                    replyHandler: { (replayDic: [String : AnyObject]) -> Void in
+//                        print(replayDic["Send"])
+//
+//                    }, errorHandler: { (error: NSError) -> Void in
+//                        print(error.description)
+//                })
+//            }
+//            else
+//            {
+//                print("WCSession isn't reachable from iWatch to iPhone")
+//            }
         }
     }
 }
