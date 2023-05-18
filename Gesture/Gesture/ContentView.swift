@@ -58,9 +58,6 @@ struct ContentView: View {
     private let csvHeader = "timestamp,xAccel,yAccel,zAccel,xRot,yRot,zRot,gesture\n"
     @State var csvText = "timestamp,xAccel,yAccel,zAccel,xRot,yRot,zRot,gesture\n"
     
-    @State private var selectedOption = "Clench"
-    let options = ["Clench", "Double Clench", "Pinch", "Double Pinch"]
-    
     // Model setup
     let model: SVM = {
         do {
@@ -72,10 +69,28 @@ struct ContentView: View {
         }
     }()
     @State var motionDataBuffer: [[Double]] = []
-    @State private var classificationText: String = "No classification yet"
+    @State private var classificationText: String = "Start Recording!"
     @State private var classificationProb: Double = 0.0
     
+    // Classification Buffer of last seen words to pass to LLM for sentence prediction
+    @State var wordsBuffer: [Dictionary<String, Double>] = []
     
+    // OpenAI LLM
+    @StateObject private var openAIClient = OpenAIManager()
+    @State var sentence = "OpenAI response..."
+    
+    let classifierMap: [Int64: String] = [
+        0: "hello",
+        1: "world",
+        2: "connect",
+        3: "empower",
+        4: "silence"
+    ]
+
+    @State private var selectedOption = "hello"
+    let options = ["hello", "world", "connect", "empower", "silence"]
+    
+
     // Text to Speech Synthesizer
     let synth = AVSpeechSynthesizer()
     private func readOut(text: String) {
@@ -85,10 +100,7 @@ struct ContentView: View {
         synth.speak(utterance)
     }
     
-    // OpenAI LLM
-    @StateObject private var openAIClient = OpenAIManager()
-    @State var sentence = "OpenAI response..."
-    
+
     private func classifyData(data: Dictionary<String, Any>) {
         if motionDataBuffer.count < 10 {
             motionDataBuffer.append(data["motionData"] as! [Double])
@@ -120,16 +132,17 @@ struct ContentView: View {
             }
 
             let prevClassText = classificationText
-
-            if pred.classProbability[1]! > pred.classProbability[2]! {
-                classificationText = "clench"
-                classificationProb = pred.classProbability[1]!
-            } else {
-                classificationText = "pinch"
-                classificationProb = pred.classProbability[2]!
-            }
+            
+            classificationText = classifierMap[pred.classLabel]!
+            classificationProb = pred.classProbability[pred.classLabel]!
 
             if prevClassText != classificationText {
+                var wordProbs: [String: Double] = [:]
+                for (intKey, prob) in pred.classProbability {
+                    wordProbs[classifierMap[intKey]!] = prob
+                }
+                
+                wordsBuffer.append(wordProbs)
                 readOut(text: classificationText)
             }
         }
@@ -137,24 +150,9 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            
-            VStack {
-                Menu {
-                    ForEach(options, id: \.self) { option in
-                        Button(action: {
-                            self.selectedOption = option
-                        }) {
-                            Text(option)
-                        }
-                    }
-                } label: {
-                    Label("Select Gesture", systemImage: "chevron.down.circle")
-                        .font(.headline)
-                }
-                Text(selectedOption)
-            }
-            Text(classificationText + ": " + String(classificationProb))
-                .padding()
+            Text(classificationText)
+                .font(.system(size: 40, weight: .bold))
+            Text("Accuracy: " + String(classificationProb))
             Image(classificationText)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -182,15 +180,47 @@ struct ContentView: View {
                             csvText.append(motionDataTxt)
                             
                             classifyData(data: data)
+                            
+                            print("DICTIONARIES: ")
+                            print(wordsBuffer.suffix(5))
+                            
+                            // Generate a new sentence including the latest words and read it
+                            // out loud if it is a new sentence.
+                            var prevSentence = sentence
+                            openAIClient.getSentence(wordProbs: wordsBuffer.suffix(5))
+                            sentence = openAIClient.sentenceResponse
+                            if sentence != prevSentence {
+                                readOut(text: sentence)
+                            }
                         }
                     }
                 }
             
-            Button(action: {
-                openAIClient.getSentence()
-                sentence = openAIClient.sentenceResponse
-            }) {
-                Text(sentence)
+            Text(sentence)
+                .padding()
+            
+//            Button(action: {
+//                openAIClient.getSentence(wordProbs: wordsBuffer.suffix(5))
+//                sentence = openAIClient.sentenceResponse
+//            }) {
+//                Text(sentence)
+//                    .padding()
+//            }
+            
+            VStack {
+                Menu {
+                    ForEach(options, id: \.self) { option in
+                        Button(action: {
+                            self.selectedOption = option
+                        }) {
+                            Text(option)
+                        }
+                    }
+                } label: {
+                    Label("Select Gesture to Save", systemImage: "chevron.down.circle")
+                        .font(.headline)
+                }
+                Text(selectedOption)
                     .padding()
             }
             

@@ -10,7 +10,7 @@
 		073989D22A1592DB00B252F6 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 073989D12A1592DB00B252F6 /* OpenAI */; };
 		073989D42A15ACA000B252F6 /* S3Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073989D32A15ACA000B252F6 /* S3Manager.swift */; };
 		073989D62A15B07E00B252F6 /* OpenAIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073989D52A15B07E00B252F6 /* OpenAIManager.swift */; };
-		073989DA2A15B24C00B252F6 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 073989D92A15B24C00B252F6 /* SVM.mlmodel */; };
+		073989DE2A15DEFE00B252F6 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 073989DD2A15DEFE00B252F6 /* SVM.mlmodel */; };
 		07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE029E1C5EE00BC0063 /* GestureApp.swift */; };
 		07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE229E1C5EE00BC0063 /* ContentView.swift */; };
 		07D03CE529E1C5EF00BC0063 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07D03CE429E1C5EF00BC0063 /* Assets.xcassets */; };
@@ -86,7 +86,7 @@
 /* Begin PBXFileReference section */
 		073989D32A15ACA000B252F6 /* S3Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Manager.swift; sourceTree = "<group>"; };
 		073989D52A15B07E00B252F6 /* OpenAIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIManager.swift; sourceTree = "<group>"; };
-		073989D92A15B24C00B252F6 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
+		073989DD2A15DEFE00B252F6 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
 		07D03CDD29E1C5EE00BC0063 /* Gesture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gesture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D03CE029E1C5EE00BC0063 /* GestureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureApp.swift; sourceTree = "<group>"; };
 		07D03CE229E1C5EE00BC0063 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -192,7 +192,7 @@
 				07D03CE029E1C5EE00BC0063 /* GestureApp.swift */,
 				07D03CE229E1C5EE00BC0063 /* ContentView.swift */,
 				073989D32A15ACA000B252F6 /* S3Manager.swift */,
-				073989D92A15B24C00B252F6 /* SVM.mlmodel */,
+				073989DD2A15DEFE00B252F6 /* SVM.mlmodel */,
 				07D03CE429E1C5EF00BC0063 /* Assets.xcassets */,
 				07D03CE629E1C5EF00BC0063 /* Preview Content */,
 				073989D52A15B07E00B252F6 /* OpenAIManager.swift */,
@@ -502,7 +502,7 @@
 			files = (
 				07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */,
 				073989D62A15B07E00B252F6 /* OpenAIManager.swift in Sources */,
-				073989DA2A15B24C00B252F6 /* SVM.mlmodel in Sources */,
+				073989DE2A15DEFE00B252F6 /* SVM.mlmodel in Sources */,
 				07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */,
 				073989D42A15ACA000B252F6 /* S3Manager.swift in Sources */,
 			);
