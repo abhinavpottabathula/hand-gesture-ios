@@ -39,7 +39,6 @@ class WatchSessionDelegate: NSObject, WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-//        if let data = message["motionDataRow"] as? String {
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: Notification.Name("MotionDataReceived"), object: message)
         }
@@ -81,10 +80,11 @@ struct ContentView: View {
     
     let classifierMap: [Int64: String] = [
         0: "hello",
-        1: "world",
+        1: "empower",
         2: "connect",
-        3: "empower",
-        4: "silence"
+        3: "world",
+        4: "silence",
+        5: "clench",
     ]
 
     @State private var selectedOption = "hello"
@@ -130,20 +130,23 @@ struct ContentView: View {
             guard let pred = try? model.prediction(input: modelInput) else {
                 fatalError("Unexpected runtime error.")
             }
-
-            let prevClassText = classificationText
             
-            classificationText = classifierMap[pred.classLabel]!
-            classificationProb = pred.classProbability[pred.classLabel]!
-
-            if prevClassText != classificationText {
-                var wordProbs: [String: Double] = [:]
-                for (intKey, prob) in pred.classProbability {
-                    wordProbs[classifierMap[intKey]!] = prob
-                }
+            // Only update UI if we have a high classification accuracy
+            if pred.classProbability[pred.classLabel]! > 0.8 {
+                let prevClassText = classificationText
                 
-                wordsBuffer.append(wordProbs)
-                readOut(text: classificationText)
+                classificationText = classifierMap[pred.classLabel]!
+                classificationProb = pred.classProbability[pred.classLabel]!
+
+                if prevClassText != classificationText {
+                    var wordProbs: [String: Double] = [:]
+                    for (intKey, prob) in pred.classProbability {
+                        wordProbs[classifierMap[intKey]!] = prob
+                    }
+                    
+                    wordsBuffer.append(wordProbs)
+                    readOut(text: classificationText)
+                }
             }
         }
     }
@@ -198,15 +201,6 @@ struct ContentView: View {
             
             Text(sentence)
                 .padding()
-            
-//            Button(action: {
-//                openAIClient.getSentence(wordProbs: wordsBuffer.suffix(5))
-//                sentence = openAIClient.sentenceResponse
-//            }) {
-//                Text(sentence)
-//                    .padding()
-//            }
-            
             VStack {
                 Menu {
                     ForEach(options, id: \.self) { option in

@@ -10,7 +10,6 @@
 		073989D22A1592DB00B252F6 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 073989D12A1592DB00B252F6 /* OpenAI */; };
 		073989D42A15ACA000B252F6 /* S3Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073989D32A15ACA000B252F6 /* S3Manager.swift */; };
 		073989D62A15B07E00B252F6 /* OpenAIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073989D52A15B07E00B252F6 /* OpenAIManager.swift */; };
-		073989DE2A15DEFE00B252F6 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 073989DD2A15DEFE00B252F6 /* SVM.mlmodel */; };
 		07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE029E1C5EE00BC0063 /* GestureApp.swift */; };
 		07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D03CE229E1C5EE00BC0063 /* ContentView.swift */; };
 		07D03CE529E1C5EF00BC0063 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07D03CE429E1C5EF00BC0063 /* Assets.xcassets */; };
@@ -29,6 +28,7 @@
 		07D03D3E29E1D3A000BC0063 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 07D03D3D29E1D3A000BC0063 /* AWSS3 */; };
 		07D03D4129E1D83400BC0063 /* AWSMobile in Frameworks */ = {isa = PBXBuildFile; productRef = 07D03D4029E1D83400BC0063 /* AWSMobile */; };
 		07D03D4329E1D84500BC0063 /* AWSCognitoIdentityProvider in Frameworks */ = {isa = PBXBuildFile; productRef = 07D03D4229E1D84500BC0063 /* AWSCognitoIdentityProvider */; };
+		07DD8B542A1EBA8000908CD7 /* SVM.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 07DD8B532A1EBA8000908CD7 /* SVM.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +70,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		073989F22A16983300B252F6 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		07D03D2C29E1C5EF00BC0063 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -86,7 +96,12 @@
 /* Begin PBXFileReference section */
 		073989D32A15ACA000B252F6 /* S3Manager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Manager.swift; sourceTree = "<group>"; };
 		073989D52A15B07E00B252F6 /* OpenAIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIManager.swift; sourceTree = "<group>"; };
-		073989DD2A15DEFE00B252F6 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
+		073989DF2A1696BE00B252F6 /* Gesture.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gesture.entitlements; sourceTree = "<group>"; };
+		073989E02A16970A00B252F6 /* Gesture Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Gesture Watch App.entitlements"; sourceTree = "<group>"; };
+		073989E72A16983300B252F6 /* ExtensionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionExtension.swift; sourceTree = "<group>"; };
+		073989E92A16983300B252F6 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		073989EB2A16983300B252F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		073989F32A16984E00B252F6 /* Gesture-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Gesture-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		07D03CDD29E1C5EE00BC0063 /* Gesture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gesture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D03CE029E1C5EE00BC0063 /* GestureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureApp.swift; sourceTree = "<group>"; };
 		07D03CE229E1C5EE00BC0063 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -107,6 +122,7 @@
 		07D03D1F29E1C5EF00BC0063 /* Gesture Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Gesture Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07D03D2329E1C5EF00BC0063 /* Gesture_Watch_AppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gesture_Watch_AppUITests.swift; sourceTree = "<group>"; };
 		07D03D2529E1C5EF00BC0063 /* Gesture_Watch_AppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gesture_Watch_AppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		07DD8B532A1EBA8000908CD7 /* SVM.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SVM.mlmodel; path = ../../../SVM.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +175,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		073989E62A16983300B252F6 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				073989E72A16983300B252F6 /* ExtensionExtension.swift */,
+				073989E92A16983300B252F6 /* Extension.swift */,
+				073989EB2A16983300B252F6 /* Info.plist */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		07D03CD429E1C5EE00BC0063 = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +194,7 @@
 				07D03D0729E1C5EF00BC0063 /* Gesture Watch App */,
 				07D03D1829E1C5EF00BC0063 /* Gesture Watch AppTests */,
 				07D03D2229E1C5EF00BC0063 /* Gesture Watch AppUITests */,
+				073989E62A16983300B252F6 /* Extension */,
 				07D03CDE29E1C5EE00BC0063 /* Products */,
 				07D03D3F29E1D83400BC0063 /* Frameworks */,
 			);
@@ -189,10 +216,11 @@
 		07D03CDF29E1C5EE00BC0063 /* Gesture */ = {
 			isa = PBXGroup;
 			children = (
+				073989DF2A1696BE00B252F6 /* Gesture.entitlements */,
 				07D03CE029E1C5EE00BC0063 /* GestureApp.swift */,
 				07D03CE229E1C5EE00BC0063 /* ContentView.swift */,
 				073989D32A15ACA000B252F6 /* S3Manager.swift */,
-				073989DD2A15DEFE00B252F6 /* SVM.mlmodel */,
+				07DD8B532A1EBA8000908CD7 /* SVM.mlmodel */,
 				07D03CE429E1C5EF00BC0063 /* Assets.xcassets */,
 				07D03CE629E1C5EF00BC0063 /* Preview Content */,
 				073989D52A15B07E00B252F6 /* OpenAIManager.swift */,
@@ -228,6 +256,8 @@
 		07D03D0729E1C5EF00BC0063 /* Gesture Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				073989F32A16984E00B252F6 /* Gesture-Watch-App-Info.plist */,
+				073989E02A16970A00B252F6 /* Gesture Watch App.entitlements */,
 				07D03D0829E1C5EF00BC0063 /* GestureApp.swift */,
 				07D03D0A29E1C5EF00BC0063 /* ContentView.swift */,
 				07D03D0C29E1C5EF00BC0063 /* Assets.xcassets */,
@@ -339,6 +369,7 @@
 				07D03CFF29E1C5EF00BC0063 /* Sources */,
 				07D03D0029E1C5EF00BC0063 /* Frameworks */,
 				07D03D0129E1C5EF00BC0063 /* Resources */,
+				073989F22A16983300B252F6 /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
@@ -502,7 +533,7 @@
 			files = (
 				07D03CE329E1C5EE00BC0063 /* ContentView.swift in Sources */,
 				073989D62A15B07E00B252F6 /* OpenAIManager.swift in Sources */,
-				073989DE2A15DEFE00B252F6 /* SVM.mlmodel in Sources */,
+				07DD8B542A1EBA8000908CD7 /* SVM.mlmodel in Sources */,
 				07D03CE129E1C5EE00BC0063 /* GestureApp.swift in Sources */,
 				073989D42A15ACA000B252F6 /* S3Manager.swift in Sources */,
 			);
@@ -694,23 +725,26 @@
 		07D03D2A29E1C5EF00BC0063 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gesture Watch App/Gesture Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gesture Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = PHH5U7676Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Gesture-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Gesture;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.abhinav.Gesture;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.abhinav.Gesturee;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesture.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesturee.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -724,23 +758,26 @@
 		07D03D2B29E1C5EF00BC0063 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Gesture Watch App/Gesture Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gesture Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = PHH5U7676Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Gesture-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Gesture;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.abhinav.Gesture;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.abhinav.Gesturee;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesture.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesturee.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -758,6 +795,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Gesture/Gesture.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gesture/Preview Content\"";
@@ -776,7 +814,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesture;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesturee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -791,6 +829,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Gesture/Gesture.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Gesture/Preview Content\"";
@@ -809,7 +848,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesture;
+				PRODUCT_BUNDLE_IDENTIFIER = com.abhinav.Gesturee;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;

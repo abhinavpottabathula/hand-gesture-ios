@@ -9,6 +9,7 @@ import SwiftUI
 import WatchConnectivity
 import WatchKit
 import CoreMotion
+import HealthKit
 
 
 class SessionDelegate: NSObject, WCSessionDelegate, ObservableObject {
@@ -85,6 +86,41 @@ struct ContentView: View {
         }
     }
     
+        
+    // Health workout session
+    let healthStore = HKHealthStore()
+
+    // The quantity type to write to the health store.
+    let typesToShare: Set = [
+        HKQuantityType.workoutType()
+    ]
+
+    // The quantity types to read from the health store.
+    let typesToRead: Set = [
+        HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+        HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+        HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!
+    ]
+
+    let configuration = HKWorkoutConfiguration()
+    
+//    @State var workoutSession = HKWorkoutSession(configuration: HKWorkoutConfiguration())
+//    @State var builder: HKLiveWorkoutBuilder
+    
+    @State var workoutSession: HKWorkoutSession = {
+        do {
+            let config = HKWorkoutConfiguration()
+            let healthStore = HKHealthStore()
+            config.activityType = .running
+            config.locationType = .outdoor
+            
+            return try HKWorkoutSession(healthStore: healthStore, configuration: config)
+        } catch {
+            print(error)
+            fatalError("Couldn't create workout session.")
+        }
+    }()
+    
     func toggleRecording() {
         if isRecording {
             stopRecording()
@@ -110,6 +146,41 @@ struct ContentView: View {
         motion.accelerometerUpdateInterval = updateInterval
         motion.startAccelerometerUpdates()
         
+        do {
+            configuration.activityType = .running
+            configuration.locationType = .outdoor
+
+//            // Request authorization for those quantity types.
+//            healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { (success, error) in
+//                // Handle errors here.
+//                if let error = error {
+//                    print("health store failed with error: \(error.localizedDescription)")
+//                }
+//            }
+//
+            workoutSession = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
+            let builder = workoutSession.associatedWorkoutBuilder()
+            builder.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore,
+                                                         workoutConfiguration: configuration)
+
+            workoutSession.startActivity(with: Date())
+            builder.beginCollection(withStart: Date()) { (success, error) in
+
+//                guard success else {
+//                    // Handle errors.
+//                    print("Error failed to begin workout collection: \(String(describing: error?.localizedDescription))")
+//                }
+
+                // Indicate that the session has started.
+                print("session started")
+            }
+
+        } catch {
+            print("Couldn't start workout session.")
+        }
+
+
+
         timer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { _ in
             var xAccel = 0.0
             var yAccel = 0.0
@@ -143,35 +214,6 @@ struct ContentView: View {
             } else {
                 print("Session not reachable")
             }
-
-//            if let session = session, session.isReachable {
-//                session.sendMessage(message, replyHandler: nil, errorHandler: { error in
-//                    print("Error sending motion data: \(error.localizedDescription)")
-//                })
-//            } else {
-//                print("Session not reachable")
-//            }
-            
-//            if WCSession.defaultSession().reachable == true {
-////                let requestValues = ["Send" : "From iWatch to iPhone"]
-//                let session = WCSession.defaultSession()
-//
-////                session.sendMessage(message, replyHandler: nil, errorHandler: { (error: NSError) -> Void in
-////                    print("Error sending motion data: \(error.description)"))
-////                })
-//
-//                session.sendMessage(message,
-//                    replyHandler: { (replayDic: [String : AnyObject]) -> Void in
-//                        print(replayDic["Send"])
-//
-//                    }, errorHandler: { (error: NSError) -> Void in
-//                        print(error.description)
-//                })
-//            }
-//            else
-//            {
-//                print("WCSession isn't reachable from iWatch to iPhone")
-//            }
         }
     }
 }
